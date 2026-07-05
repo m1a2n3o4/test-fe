@@ -8,8 +8,14 @@ export default function App() {
   const [message, setMessage] = useState("");
 
   const load = async () => {
-    const r = await fetch(`${API}/feedback`);
-    setItems(await r.json());
+    try {
+      const r = await fetch(`${API}/feedback`);
+      const data = await r.json();
+      setItems(Array.isArray(data) ? data : []);
+    } catch (e) {
+      console.error("Failed to load feedback:", e);
+      setItems([]);
+    }
   };
   // eslint-disable-next-line react-hooks/set-state-in-effect -- load is async; setItems runs after await, not synchronously
   useEffect(() => { load(); }, []);
